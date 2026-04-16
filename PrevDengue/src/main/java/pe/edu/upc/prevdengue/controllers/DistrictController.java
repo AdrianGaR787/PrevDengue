@@ -58,7 +58,7 @@ public class DistrictController {
         Optional<District> existente = dS.listId(dto.getIdDistrict());
         if (existente.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso no encontrado");
+                    .body("Distrito no encontrado");
         }
 
         District dis = existente.get();
@@ -67,7 +67,18 @@ public class DistrictController {
 
         dS.update(dis);
 
-        return ResponseEntity.ok("Curso actualizado correctamente");
+        return ResponseEntity.ok("Distrito actualizado correctamente");
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable int id) {
+        Optional<District> distrito = dS.listId(id);
 
+        if (distrito.isPresent()) {
+            dS.delete(id);
+            return ResponseEntity.ok("Distrito eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Distrito no encontrado");
+        }
+    }
 }

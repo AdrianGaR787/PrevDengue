@@ -10,4 +10,5 @@ public interface IDistrictService {
     public District insert(District d);
     public Optional<District> listId(int id);
     public void update(District d);
+    public void delete(int id);
 }

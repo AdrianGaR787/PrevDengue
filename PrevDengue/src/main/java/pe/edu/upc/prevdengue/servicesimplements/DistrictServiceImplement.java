@@ -35,4 +35,9 @@ public class DistrictServiceImplement implements IDistrictService {
     public void update(District d) {
         dR.save(d);
     }
+
+    @Override
+    public void delete(int id) {
+        dR.deleteById(id);
+    }
 }

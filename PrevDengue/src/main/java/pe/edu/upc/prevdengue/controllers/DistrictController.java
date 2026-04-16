@@ -48,7 +48,7 @@ public class DistrictController {
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso no encontrado");
+                    .body("Distrito no encontrado");
         }
     }
 

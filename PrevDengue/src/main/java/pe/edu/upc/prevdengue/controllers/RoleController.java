@@ -51,4 +51,34 @@ public class RoleController {
                     .body("Curso no encontrado");
         }
     }
+    @PutMapping("/actualiza")
+    public ResponseEntity<String> actualizar(@RequestBody RoleSpecialDTO dto) {
+
+        Optional<Role> existente = rS.listId(dto.getIdRole());
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Rol no encontrado");
+        }
+
+        Role ro = existente.get();
+
+        ro.setNameRole(dto.getNameRole());
+        ro.setDescription(dto.getDescription());
+
+        rS.update(ro);
+
+        return ResponseEntity.ok("Rol actualizado correctamente");
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable int id) {
+        Optional<Role> role = rS.listId(id);
+
+        if (role.isPresent()) {
+            rS.delete(id);
+            return ResponseEntity.ok("Rol eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Rol no encontrado");
+        }
+    }
 }

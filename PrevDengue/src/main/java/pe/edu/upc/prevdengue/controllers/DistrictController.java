@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/distritos")
+@RequestMapping("/api/distritos")
 public class DistrictController {
     @Autowired
     private IDistrictService dS;

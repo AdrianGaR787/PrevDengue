@@ -15,7 +15,6 @@ public class SymptomServiceImplement implements ISymptomService {
     private ISymptomRepository sR;
 
 
-
     @Override
     public List<Symptom> list() {
         return sR.findAll();

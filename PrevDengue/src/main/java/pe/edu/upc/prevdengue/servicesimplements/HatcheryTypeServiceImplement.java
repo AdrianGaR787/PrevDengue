@@ -29,4 +29,14 @@ public class HatcheryTypeServiceImplement implements IHatcheryTypeService {
     public Optional<HatcheryType> listId(int id) {
         return hR.findById(id);
     }
+
+    @Override
+    public void update(HatcheryType h) {
+        hR.save(h);
+
+    }
+    @Override
+    public void delete(int idHatcheryType) {
+        hR.deleteById(idHatcheryType);
+    }
 }

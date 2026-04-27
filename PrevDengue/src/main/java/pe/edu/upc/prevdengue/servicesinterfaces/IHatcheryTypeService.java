@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IHatcheryTypeService {
-    public List<HatcheryType>list();
-    public HatcheryType insert(HatcheryType h);
-    public Optional<HatcheryType>listId(int id);
+    List<HatcheryType> list();
+
+    public HatcheryType insert(HatcheryType h); // Para Crear y Actualizar
+    public void delete(int idHatcheryType);    // Para Eliminar
+    public Optional<HatcheryType> listId(int idHatcheryType);
+    public void update(HatcheryType h);
 
 }

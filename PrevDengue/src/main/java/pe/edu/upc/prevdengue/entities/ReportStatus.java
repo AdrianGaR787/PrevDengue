@@ -8,7 +8,7 @@ public class ReportStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idStatus;
-    @Column(name = "nameStatus" ,length = 30 ,nullable = false)
+    @Column(name = "nameStatus" ,length = 100 ,nullable = false)
     private String nameStatus;
 
     public ReportStatus() {

@@ -11,4 +11,6 @@ import java.util.List;
 public interface IReportRepository extends JpaRepository<Report,Integer> {
     @Query("SELECT r.hatcheryType.nameHatchery, COUNT(r) FROM Report r GROUP BY r.hatcheryType.nameHatchery ORDER BY COUNT(r) DESC")
     public List<String[]> countReportsByHatcheryType();
+    @Query("SELECT r.status.nameStatus, COUNT(r) FROM Report r GROUP BY r.status.nameStatus ORDER BY COUNT(r) DESC")
+    public List<String[]> countReportsByStatus();
 }

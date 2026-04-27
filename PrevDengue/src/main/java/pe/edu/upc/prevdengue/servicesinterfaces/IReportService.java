@@ -12,4 +12,5 @@ public interface IReportService {
     public Optional<Report> listId(int idReport);
     public void update(Report rP);
     public List<String[]> getReportCountByHatcheryType();
+    public List<String[]> getReportCountByStatus();
 }

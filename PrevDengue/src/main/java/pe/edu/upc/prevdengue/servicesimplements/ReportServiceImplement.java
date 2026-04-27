@@ -48,4 +48,9 @@ public class ReportServiceImplement implements IReportService {
     public List<String[]> getReportCountByHatcheryType() {
         return rR.countReportsByHatcheryType();
     }
+
+    @Override
+    public List<String[]> getReportCountByStatus() {
+        return rR.countReportsByStatus();
+    }
 }

@@ -73,4 +73,12 @@ public class ReportController {
         }
         return ResponseEntity.ok(report);
     }
+    @GetMapping("/reporte-por-estado")
+    public ResponseEntity<?> getReportCountByStatus() {
+        List<String[]> report = rS.getReportCountByStatus();
+        if (report.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay reportes disponibles para mostrar");
+        }
+        return ResponseEntity.ok(report);
+    }
 }

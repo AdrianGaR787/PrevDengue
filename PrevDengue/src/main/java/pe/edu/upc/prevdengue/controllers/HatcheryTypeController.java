@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
 import pe.edu.upc.prevdengue.dtos.HatcheryTypeDTO;
 import pe.edu.upc.prevdengue.dtos.HatcheryTypeSpecialDTO;
+import pe.edu.upc.prevdengue.entities.District;
 import pe.edu.upc.prevdengue.entities.HatcheryType;
 import pe.edu.upc.prevdengue.servicesinterfaces.IHatcheryTypeService;
 
@@ -51,6 +53,34 @@ public class HatcheryTypeController {
                     .body("Curso no encontrado");
         }
     }
+    @PutMapping("/actualiza")
+    public ResponseEntity<String> actualizar(@RequestBody HatcheryTypeSpecialDTO dto) {
 
+        Optional<HatcheryType> existente = cS.listId(dto.getIdHatcheryType());
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Tipo de criadero no encontrado");
+        }
+
+        HatcheryType hT = existente.get();
+
+        hT.setNameHatchery(dto.getNameHatchery());
+
+        cS.update(hT);
+
+        return ResponseEntity.ok("Tipo de criadero actualizado correctamente");
+    }
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable int id) {
+        Optional<HatcheryType> existente = cS.listId(id);
+
+        if (existente.isPresent()) {
+            cS.delete(id);
+            return ResponseEntity.ok("Tipo de criadero eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Tipo de criadero no encontrado");
+        }
+    }
 
 }

@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.RoleDTO;
 import pe.edu.upc.prevdengue.dtos.RoleSpecialDTO;
+import pe.edu.upc.prevdengue.dtos.SymptomDTO;
 import pe.edu.upc.prevdengue.entities.Role;
+import pe.edu.upc.prevdengue.entities.Symptom;
 import pe.edu.upc.prevdengue.servicesinterfaces.IRoleService;
 
 import java.util.List;
@@ -48,7 +50,27 @@ public class RoleController {
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso no encontrado");
+                    .body("Rol con ese ID no encontrado");
         }
+    }
+
+    @PutMapping("/actualiza")
+    public ResponseEntity<?> actualizar(@RequestBody RoleSpecialDTO dto) {
+        Optional<Role> existente = rS.listId(dto.getIdRole());
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol no encontrado");
+        }
+        ModelMapper m = new ModelMapper();
+        Role s = m.map(dto, Role.class);
+        Role actualizado = rS.insert(s);
+        return ResponseEntity.ok(m.map(actualizado, RoleSpecialDTO.class));
+    }
+    @DeleteMapping("/elimina/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable int id) {
+        if (rS.listId(id).isPresent()) {
+            rS.delete(id);
+            return ResponseEntity.ok("Rol eliminado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol con ese id no encontrado al intentar eliminar");
     }
 }

@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.NotificationDTO;
 import pe.edu.upc.prevdengue.dtos.PredictiveAlertDTO;
@@ -16,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/Alerta-predictiva")
+@RequestMapping("/alertas-predictivas")
 public class PredictiveAlertController {
 
     @Autowired
@@ -31,6 +32,7 @@ public class PredictiveAlertController {
         return ResponseEntity.ok(alertList);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> register(@RequestBody PredictiveAlertDTO dto) {
         ModelMapper m = new ModelMapper();
         PredictiveAlert pa = m.map(dto, PredictiveAlert.class);

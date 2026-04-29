@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.PredictiveAlertDTO;
 import pe.edu.upc.prevdengue.dtos.ReportDTO;
@@ -22,6 +23,7 @@ public class ReportController {
     private IReportService rS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CUIDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<ReportDTO>> listAll() {
         ModelMapper m = new ModelMapper();
         List<ReportDTO> reportList = rS.list().stream()
@@ -30,6 +32,7 @@ public class ReportController {
         return ResponseEntity.ok(reportList);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAuthority('CIUDADANO')")
     public ResponseEntity<?> register(@RequestBody ReportDTO dto) {
         ModelMapper m = new ModelMapper();
         Report r = m.map(dto, Report.class);

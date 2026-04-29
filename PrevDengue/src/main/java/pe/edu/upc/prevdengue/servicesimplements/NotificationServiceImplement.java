@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.prevdengue.entities.Notification;
 import pe.edu.upc.prevdengue.repositories.INotificationRepository;
 import pe.edu.upc.prevdengue.servicesinterfaces.INotificationService;
-import tools.jackson.databind.annotation.JsonAppend;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class NotificationServiceImplement implements INotificationService {
     @Override
     public Notification insert(Notification nT) {
         if (nT.getIdNotification() == 0) {
-            nT.isRead(false);
+            nT.setRead(false);
         }
         return nR.save(nT);
     }

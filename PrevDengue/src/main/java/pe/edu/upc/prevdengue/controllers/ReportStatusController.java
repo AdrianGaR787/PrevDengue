@@ -56,7 +56,7 @@ public class ReportStatusController {
 
     @PutMapping("/actualiza")
     public ResponseEntity<?> actualizar(@RequestBody ReportStatusDTO dto) {
-        Optional<ReportStatus> existente = eS.listId(dto.getIdReportStatus());
+        Optional<ReportStatus> existente = eS.listId(dto.getIdStatus());
         if (existente.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estado de informe no encontrado");
         }

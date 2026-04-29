@@ -46,7 +46,7 @@ public class UserController {
         ModelMapper m = new ModelMapper();
         User u = m.map(dto, User.class);
         User actualizado = uS.insert(u);
-        return ResponseEntity.ok(m.map(actualizado, SymptomDTO.class));
+        return ResponseEntity.ok(m.map(actualizado, UserDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
     public ResponseEntity<?> eliminar(@PathVariable int id) {

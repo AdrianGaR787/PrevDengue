@@ -2,6 +2,7 @@ package pe.edu.upc.prevdengue.servicesimplements;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prevdengue.dtos.ReportSymptomCountDTO;
 import pe.edu.upc.prevdengue.entities.Report;
 import pe.edu.upc.prevdengue.repositories.IReportRepository;
 import pe.edu.upc.prevdengue.servicesinterfaces.IReportService;
@@ -52,5 +53,15 @@ public class ReportServiceImplement implements IReportService {
     @Override
     public List<String[]> getReportCountByStatus() {
         return rR.countReportsByStatus();
+    }
+
+    @Override
+    public List<ReportSymptomCountDTO> listReportsWithMostSymptoms() {
+        return rR.getReportsWithMostSymptoms();
+    }
+
+    @Override
+    public List<Report> listHighRiskReports() {
+        return rR.getHighRiskReports();
     }
 }

@@ -77,8 +77,12 @@ public class SymptomController {
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso no encontrado");
+                    .body("Sintoma no encontrado con ese id");
         }
+    }
+    @GetMapping("/mas-frecuentes")
+    public ResponseEntity<?> getMostFrequentSymptoms() {
+        return ResponseEntity.ok(sS.getMostFrequentSymptoms());
     }
 
 }

@@ -69,4 +69,12 @@ public class UserController {
                     .body("Usuario no encontrado");
         }
     }
+    @GetMapping("/top-participacion")
+    public ResponseEntity<?> getTopUsers() {
+        return ResponseEntity.ok(uS.listTopUsersByPoints());
+    }
+    @GetMapping("/por-idioma")
+    public ResponseEntity<?> getUsersByPreferredLanguage() {
+        return ResponseEntity.ok(uS.listUsersByPreferredLanguage());
+    }
 }

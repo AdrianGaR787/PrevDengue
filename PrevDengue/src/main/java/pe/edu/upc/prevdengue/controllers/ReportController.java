@@ -84,4 +84,12 @@ public class ReportController {
         }
         return ResponseEntity.ok(report);
     }
+    @GetMapping("/con-mas-sintomas")
+    public ResponseEntity<?> getReportsWithMostSymptoms() {
+        return ResponseEntity.ok(rS.listReportsWithMostSymptoms());
+    }
+    @GetMapping("/zonas-alto-riesgo")
+    public ResponseEntity<?> getHighRiskReports() {
+        return ResponseEntity.ok(rS.listHighRiskReports());
+    }
 }

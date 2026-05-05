@@ -2,6 +2,7 @@ package pe.edu.upc.prevdengue.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import pe.edu.upc.prevdengue.entities.User;
 import pe.edu.upc.prevdengue.servicesinterfaces.IInterventionCampaignService;
 import pe.edu.upc.prevdengue.servicesinterfaces.IUserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,5 +83,15 @@ public class InterventionCampaignController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);
     }
+    @GetMapping("/por-tipo")
+    public ResponseEntity<?> getCampaignsByType() {
+        return ResponseEntity.ok(iC.listCampaignsByType());
+    }
+    @GetMapping("/por-lapso-tiempo")
+    public ResponseEntity<?> getCampaignsInTimeframe(
+            @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+            @RequestParam("fin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
 
+        return ResponseEntity.ok(iC.listCampaignsInTimeframe(inicio, fin));
+    }
 }

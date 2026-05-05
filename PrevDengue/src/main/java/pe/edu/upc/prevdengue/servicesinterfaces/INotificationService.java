@@ -11,5 +11,6 @@ public interface INotificationService {
     public void delete(int idNotification);
     public Optional<Notification> listId(int idNotification);
     public void update(Notification nT);
+    List<Notification> listReadNotifications();
 }
     

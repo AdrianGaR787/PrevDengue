@@ -41,4 +41,14 @@ public class UserServiceImplement implements IUserService {
     public void update(User uS) {
         uR.save(uS);
     }
+
+    @Override
+    public List<User> listTopUsersByPoints() {
+        return uR.getTopUsersByPoints();
+    }
+
+    @Override
+    public List<User> listUsersByPreferredLanguage() {
+        return uR.getUsersByPreferredLanguage();
+    }
 }

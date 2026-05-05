@@ -1,5 +1,6 @@
 package pe.edu.upc.prevdengue.servicesinterfaces;
 
+import pe.edu.upc.prevdengue.dtos.FrequentSymptomDTO;
 import pe.edu.upc.prevdengue.entities.HatcheryType;
 import pe.edu.upc.prevdengue.entities.Symptom;
 
@@ -12,4 +13,5 @@ public interface ISymptomService {
     public void delete(int idSymptom);
     public Optional<Symptom> listId(int idSymptom);
     public void update(Symptom s);
+    List<FrequentSymptomDTO> getMostFrequentSymptoms();
 }

@@ -43,4 +43,9 @@ public class NotificationServiceImplement implements INotificationService {
         nR.save(nT);
 
     }
+
+    @Override
+    public List<Notification> listReadNotifications() {
+        return nR.getReadNotifications();
+    }
 }

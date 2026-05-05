@@ -2,6 +2,7 @@ package pe.edu.upc.prevdengue.servicesimplements;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prevdengue.dtos.FrequentSymptomDTO;
 import pe.edu.upc.prevdengue.entities.Symptom;
 import pe.edu.upc.prevdengue.repositories.ISymptomRepository;
 import pe.edu.upc.prevdengue.servicesinterfaces.ISymptomService;
@@ -37,5 +38,10 @@ public class SymptomServiceImplement implements ISymptomService {
     @Override
     public void update(Symptom s) {
         sR.save(s);
+    }
+
+    @Override
+    public List<FrequentSymptomDTO> getMostFrequentSymptoms() {
+        return sR.getMostFrequentSymptoms();
     }
 }

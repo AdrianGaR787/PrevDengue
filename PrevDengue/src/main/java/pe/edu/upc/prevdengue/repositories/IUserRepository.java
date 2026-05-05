@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upc.prevdengue.entities.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,5 +24,11 @@ public interface IUserRepository extends JpaRepository<User,Integer> {
     @Modifying
     @Query(value = "insert into roles (rol, user_id) VALUES (:rol, :user_id)", nativeQuery = true)
     public void insRol(@Param("rol") String authority, @Param("user_id") Long user_id);
+
+    @Query(value = "SELECT * FROM \"user\" ORDER BY accumulated_points DESC", nativeQuery = true)
+    List<User> getTopUsersByPoints();
+    
+    @Query(value = "SELECT * FROM \"user\" WHERE preferred_language IN ('ES', 'EN', 'Español', 'Ingles')", nativeQuery = true)
+    List<User> getUsersByPreferredLanguage();
 
 }

@@ -11,4 +11,6 @@ public interface IUserService {
     public void delete(int idUser);
     public Optional<User> listId(int idUser);
     public void update(User uS);
+    List<User> listTopUsersByPoints();
+    List<User> listUsersByPreferredLanguage();
 }

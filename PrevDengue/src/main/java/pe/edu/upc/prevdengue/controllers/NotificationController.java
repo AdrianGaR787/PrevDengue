@@ -76,4 +76,8 @@ public class NotificationController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notificacion con ese ID no encontrado");
     }
+    @GetMapping("/leidas")
+    public ResponseEntity<?> getReadNotifications() {
+        return ResponseEntity.ok(nS.listReadNotifications());
+    }
 }

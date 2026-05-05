@@ -1,5 +1,6 @@
 package pe.edu.upc.prevdengue.servicesinterfaces;
 
+import pe.edu.upc.prevdengue.dtos.ReportSymptomCountDTO;
 import pe.edu.upc.prevdengue.entities.Report;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface IReportService {
     public void update(Report rP);
     public List<String[]> getReportCountByHatcheryType();
     public List<String[]> getReportCountByStatus();
+    List<ReportSymptomCountDTO> listReportsWithMostSymptoms();
+    List<Report> listHighRiskReports();
 }

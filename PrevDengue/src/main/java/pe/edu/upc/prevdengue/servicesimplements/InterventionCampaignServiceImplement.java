@@ -2,11 +2,13 @@ package pe.edu.upc.prevdengue.servicesimplements;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prevdengue.dtos.CampaignByTypeDTO;
 import pe.edu.upc.prevdengue.entities.InterventionCampaign;
 import pe.edu.upc.prevdengue.entities.ReportStatus;
 import pe.edu.upc.prevdengue.repositories.IinterventionCampaignRepository;
 import pe.edu.upc.prevdengue.servicesinterfaces.IInterventionCampaignService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,4 +46,15 @@ public class InterventionCampaignServiceImplement implements IInterventionCampai
     public List<InterventionCampaign> searchByDistrictName(String districtName) {
         return iC.findByDistrictNameDistrictContainingIgnoreCase(districtName);
     }
+
+    @Override
+    public List<CampaignByTypeDTO> listCampaignsByType() {
+        return iC.getCampaignsByType();
+    }
+
+    @Override
+    public List<InterventionCampaign> listCampaignsInTimeframe(LocalDateTime startDate, LocalDateTime endDate) {
+        return iC.getCampaignsInTimeframe(startDate,endDate);
+    }
+    
 }

@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.ReportStatusDTO;
 import pe.edu.upc.prevdengue.entities.ReportStatus;
@@ -20,6 +21,7 @@ public class ReportStatusController {
     private IReportStatusService eS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> listar() {
         ModelMapper m = new ModelMapper();
         List<ReportStatusDTO> listaEstados = eS.list().stream()
@@ -35,6 +37,7 @@ public class ReportStatusController {
     }
 
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody ReportStatusDTO dto) {
         ModelMapper m = new ModelMapper();
         ReportStatus rs = m.map(dto, ReportStatus.class);
@@ -44,6 +47,7 @@ public class ReportStatusController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<ReportStatus> rs = eS.listId(id);
@@ -55,6 +59,7 @@ public class ReportStatusController {
     }
 
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody ReportStatusDTO dto) {
         Optional<ReportStatus> existente = eS.listId(dto.getIdStatus());
         if (existente.isEmpty()) {
@@ -67,6 +72,7 @@ public class ReportStatusController {
     }
 
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (eS.listId(id).isPresent()) {
             eS.delete(id);

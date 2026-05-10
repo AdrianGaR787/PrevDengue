@@ -4,6 +4,7 @@
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
+    import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.web.bind.annotation.*;
     import pe.edu.upc.prevdengue.dtos.DistrictDTO;
     import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
@@ -21,6 +22,7 @@
         private IDistrictService dS;
 
         @GetMapping()
+        @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
         public ResponseEntity<?> listar() {
             ModelMapper m = new ModelMapper();
             List<DistrictDTO> listaDistritos = dS.list().stream()
@@ -36,6 +38,7 @@
         }
 
         @PostMapping("/nuevo")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
         public ResponseEntity<?> registrar(@RequestBody DistrictSpecialDTO dto){
             ModelMapper m = new ModelMapper();
             District d = m.map(dto, District.class);
@@ -45,6 +48,7 @@
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
         @GetMapping("/{id}")
+        @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
         public ResponseEntity<?> buscarPorId(@PathVariable int id) {
             ModelMapper m = new ModelMapper();
             Optional<District> distrito = dS.listId(id);
@@ -59,6 +63,7 @@
         }
 
         @PutMapping("/actualiza")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
         public ResponseEntity<String> actualizar(@RequestBody DistrictSpecialDTO dto) {
 
             Optional<District> existente = dS.listId(dto.getIdDistrict());
@@ -76,6 +81,7 @@
             return ResponseEntity.ok("Distrito actualizado correctamente");
         }
         @DeleteMapping("/eliminar/{id}")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
         public ResponseEntity<?> eliminar(@PathVariable int id) {
             Optional<District> existente = dS.listId(id);
 

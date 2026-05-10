@@ -24,6 +24,7 @@ public class PredictiveAlertController {
     private IPredictiveAlertService paS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<PredictiveAlertDTO>> listAll() {
         ModelMapper m = new ModelMapper();
         List<PredictiveAlertDTO> alertList = paS.list().stream()
@@ -40,6 +41,7 @@ public class PredictiveAlertController {
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, PredictiveAlertDTO.class));
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<PredictiveAlert> pA = paS.listId(id);
@@ -51,6 +53,7 @@ public class PredictiveAlertController {
     }
 
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody PredictiveAlertDTO dto) {
         Optional<PredictiveAlert> existente = paS.listId(dto.getIdAlert());
         if (existente.isEmpty()) {
@@ -62,6 +65,7 @@ public class PredictiveAlertController {
         return ResponseEntity.ok(m.map(actualizado, PredictiveAlertDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (paS.listId(id).isPresent()) {
             paS.delete(id);

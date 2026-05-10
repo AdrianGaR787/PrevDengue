@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.*;
 import pe.edu.upc.prevdengue.entities.HatcheryType;
@@ -23,6 +24,7 @@ public class SymptomController {
     private ISymptomService sS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> listar() {
         ModelMapper m = new ModelMapper();
         List<SymptomDTO> listaSintomas = sS.list().stream()
@@ -37,6 +39,7 @@ public class SymptomController {
         return ResponseEntity.ok(listaSintomas);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody SymptomDTO dto) {
         ModelMapper m = new ModelMapper();
         Symptom s = m.map(dto, Symptom.class);
@@ -47,6 +50,7 @@ public class SymptomController {
     }
 
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody SymptomDTO dto) {
         Optional<Symptom> existente = sS.listId(dto.getIdSymptom());
         if (existente.isEmpty()) {
@@ -59,6 +63,7 @@ public class SymptomController {
     }
 
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (sS.listId(id).isPresent()) {
             sS.delete(id);
@@ -68,6 +73,7 @@ public class SymptomController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Symptom> curso = sS.listId(id);
@@ -81,6 +87,7 @@ public class SymptomController {
         }
     }
     @GetMapping("/mas-frecuentes")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getMostFrequentSymptoms() {
         return ResponseEntity.ok(sS.getMostFrequentSymptoms());
     }

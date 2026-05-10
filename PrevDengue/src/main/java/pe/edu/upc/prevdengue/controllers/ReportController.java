@@ -23,7 +23,7 @@ public class ReportController {
     private IReportService rS;
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('CUIDADANO', 'BRIGADISTA', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<ReportDTO>> listAll() {
         ModelMapper m = new ModelMapper();
         List<ReportDTO> reportList = rS.list().stream()
@@ -40,6 +40,7 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, ReportDTO.class));
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Report> rO = rS.listId(id);
@@ -50,6 +51,7 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reporte con ese id no encontrado");
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody ReportDTO dto) {
         Optional<Report> existente = rS.listId(dto.getIdReport());
         if (existente.isEmpty()) {
@@ -61,6 +63,7 @@ public class ReportController {
         return ResponseEntity.ok(m.map(actualizado, ReportDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'BRIGADISTA')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (rS.listId(id).isPresent()) {
             rS.delete(id);
@@ -69,6 +72,7 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reporte con ese ID no encontrado");
     }
     @GetMapping("/reportes-tipo-criadero")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getReportCountByHatcheryType() {
         List<String[]> report = rS.getReportCountByHatcheryType();
         if (report.isEmpty()) {
@@ -77,6 +81,7 @@ public class ReportController {
         return ResponseEntity.ok(report);
     }
     @GetMapping("/reporte-por-estado")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getReportCountByStatus() {
         List<String[]> report = rS.getReportCountByStatus();
         if (report.isEmpty()) {
@@ -85,10 +90,12 @@ public class ReportController {
         return ResponseEntity.ok(report);
     }
     @GetMapping("/con-mas-sintomas")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getReportsWithMostSymptoms() {
         return ResponseEntity.ok(rS.listReportsWithMostSymptoms());
     }
     @GetMapping("/zonas-alto-riesgo")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getHighRiskReports() {
         return ResponseEntity.ok(rS.listHighRiskReports());
     }

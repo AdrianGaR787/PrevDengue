@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.InterventionCampaignDTO;
 import pe.edu.upc.prevdengue.dtos.NotificationDTO;
@@ -27,6 +28,7 @@ public class NotificationController {
     private INotificationService nS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> listar() {
         ModelMapper m = new ModelMapper();
         List<NotificationDTO> listaNotificaciones = nS.list().stream()
@@ -41,6 +43,7 @@ public class NotificationController {
         return ResponseEntity.ok(listaNotificaciones);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody NotificationDTO dto) {
         ModelMapper m = new ModelMapper();
         Notification n = m.map(dto, Notification.class);
@@ -48,6 +51,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(guardada, NotificationDTO.class));
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Notification> rs = nS.listId(id);
@@ -58,6 +62,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notification con ese id no encontrado");
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody NotificationDTO dto) {
         Optional<Notification> existente = nS.listId(dto.getIdNotification());
         if (existente.isEmpty()) {
@@ -69,6 +74,7 @@ public class NotificationController {
         return ResponseEntity.ok(m.map(actualizado, NotificationDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (nS.listId(id).isPresent()) {
             nS.delete(id);
@@ -77,6 +83,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notificacion con ese ID no encontrado");
     }
     @GetMapping("/leidas")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getReadNotifications() {
         return ResponseEntity.ok(nS.listReadNotifications());
     }

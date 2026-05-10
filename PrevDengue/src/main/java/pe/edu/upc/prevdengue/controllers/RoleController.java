@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.RoleDTO;
 import pe.edu.upc.prevdengue.dtos.RoleSpecialDTO;
@@ -23,6 +24,7 @@ public class RoleController {
     private IRoleService rS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<RoleDTO>>listar(){
         ModelMapper m=new ModelMapper();
         List<RoleDTO> listaRoles= rS.list().stream()
@@ -31,6 +33,7 @@ public class RoleController {
         return ResponseEntity.ok(listaRoles);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody RoleSpecialDTO dto){
         ModelMapper m = new ModelMapper();
         Role r = m.map(dto,Role.class);
@@ -41,6 +44,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Role> curso = rS.listId(id);
@@ -55,6 +59,7 @@ public class RoleController {
     }
 
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody RoleSpecialDTO dto) {
         Optional<Role> existente = rS.listId(dto.getIdRole());
         if (existente.isEmpty()) {
@@ -66,6 +71,7 @@ public class RoleController {
         return ResponseEntity.ok(m.map(actualizado, RoleSpecialDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (rS.listId(id).isPresent()) {
             rS.delete(id);

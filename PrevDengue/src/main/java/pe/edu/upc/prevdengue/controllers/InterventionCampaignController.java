@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.InterventionCampaignDTO;
 import pe.edu.upc.prevdengue.dtos.SymptomDTO;
@@ -27,6 +28,7 @@ public class InterventionCampaignController {
     private IInterventionCampaignService iC;
 
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody InterventionCampaignDTO dto) {
         ModelMapper m = new ModelMapper();
         InterventionCampaign c = m.map(dto, InterventionCampaign.class);
@@ -35,6 +37,7 @@ public class InterventionCampaignController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<InterventionCampaignDTO>> listar() {
         ModelMapper m = new ModelMapper();
         List<InterventionCampaignDTO> lista = iC.list().stream()
@@ -43,6 +46,7 @@ public class InterventionCampaignController {
         return ResponseEntity.ok(lista);
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody InterventionCampaignDTO dto) {
         Optional<InterventionCampaign> existente = iC.listId(dto.getIdCampana());
         if (existente.isEmpty()) {
@@ -55,6 +59,7 @@ public class InterventionCampaignController {
     }
 
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (iC.listId(id).isPresent()) {
             iC.delete(id);
@@ -63,6 +68,7 @@ public class InterventionCampaignController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Campaña con ese ID no encontrado");
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<InterventionCampaign> curso = iC.listId(id);
@@ -72,10 +78,11 @@ public class InterventionCampaignController {
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Usuario no encontrado");
+                    .body("Campaña de Intervencion no encontrado");
         }
     }
     @GetMapping("/buscar-por-distrito")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<InterventionCampaignDTO>> searchByDistrict(@RequestParam String districtName) {
         ModelMapper m = new ModelMapper();
         List<InterventionCampaignDTO> list = iC.searchByDistrictName(districtName).stream()
@@ -84,9 +91,12 @@ public class InterventionCampaignController {
         return ResponseEntity.ok(list);
     }
     @GetMapping("/por-tipo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getCampaignsByType() {
         return ResponseEntity.ok(iC.listCampaignsByType());
     }
+
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     @GetMapping("/por-lapso-tiempo")
     public ResponseEntity<?> getCampaignsInTimeframe(
             @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,

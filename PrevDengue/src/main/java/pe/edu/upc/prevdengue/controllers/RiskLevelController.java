@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.ReportStatusDTO;
 import pe.edu.upc.prevdengue.dtos.RiskLevelDTO;
@@ -20,8 +21,9 @@ import java.util.stream.Collectors;
 public class RiskLevelController {
     @Autowired
     private IRiskLevelService rL;
-    @GetMapping
 
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> listar(){
         ModelMapper m=new ModelMapper();
         List<RiskLevelDTO> listaNiveles= rL.list().stream()
@@ -37,6 +39,7 @@ public class RiskLevelController {
     }
 
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody RiskLevelDTO dto) {
         ModelMapper m = new ModelMapper();
         RiskLevel rl = m.map(dto, RiskLevel.class);   // DTO → entidad
@@ -47,6 +50,7 @@ public class RiskLevelController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<RiskLevel> existente = rL.listId(id);
@@ -60,6 +64,7 @@ public class RiskLevelController {
     }
 
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody RiskLevelDTO dto) {
         Optional<RiskLevel> existente = rL.listId(dto.getIdRiskLevel());
         if (existente.isEmpty()) {
@@ -77,6 +82,7 @@ public class RiskLevelController {
         }
 
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (rL.listId(id).isPresent()) {
             rL.delete(id);

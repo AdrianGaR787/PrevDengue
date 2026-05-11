@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.NeighborValidationDTO;
 import pe.edu.upc.prevdengue.dtos.NotificationDTO;
@@ -23,7 +24,9 @@ public class NeighborValidationController {
     private INeighborValidationService nvS;
 
     @GetMapping
-    public ResponseEntity<List<NeighborValidationDTO>> listAll() {
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
+    public ResponseEntity<List<NeighborValidationDTO>> listAll()
+    {
         ModelMapper m = new ModelMapper();
         List<NeighborValidationDTO> validationList = nvS.list().stream()
                 .map(x -> m.map(x, NeighborValidationDTO.class))
@@ -32,6 +35,7 @@ public class NeighborValidationController {
     }
 
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO','ADMIN')")
     public ResponseEntity<?> register(@RequestBody NeighborValidationDTO dto) {
         ModelMapper m = new ModelMapper();
         NeighborValidation nv = m.map(dto, NeighborValidation.class);
@@ -39,6 +43,7 @@ public class NeighborValidationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, NeighborValidationDTO.class));
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<NeighborValidation> rs = nvS.listId(id);
@@ -49,6 +54,7 @@ public class NeighborValidationController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Validacion con ese id no encontrado");
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody NeighborValidationDTO dto) {
         Optional<NeighborValidation> existente = nvS.listId(dto.getIdValidation());
         if (existente.isEmpty()) {
@@ -60,6 +66,7 @@ public class NeighborValidationController {
         return ResponseEntity.ok(m.map(actualizado, NeighborValidationDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (nvS.listId(id).isPresent()) {
             nvS.delete(id);

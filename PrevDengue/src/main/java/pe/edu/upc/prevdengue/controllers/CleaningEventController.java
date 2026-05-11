@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.CleaningEventDTO;
 import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
@@ -27,6 +28,7 @@ public class CleaningEventController {
     private ICleaningEventService ceS;
 
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> register(@RequestBody CleaningEventDTO dto) {
         ModelMapper m = new ModelMapper();
         CleaningEvent ce = m.map(dto, CleaningEvent.class);
@@ -34,6 +36,7 @@ public class CleaningEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, CleaningEventDTO.class));
     }
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<CleaningEventDTO>> listAll() {
         ModelMapper m = new ModelMapper();
         List<CleaningEventDTO> eventList = ceS.list().stream()
@@ -42,6 +45,7 @@ public class CleaningEventController {
         return ResponseEntity.ok(eventList);
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<CleaningEvent> limpieza = ceS.listId(id);
@@ -55,6 +59,7 @@ public class CleaningEventController {
         }
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> actualizar(@RequestBody CleaningEventDTO dto) {
         Optional<CleaningEvent> existente = ceS.listId(dto.getIdEvent());
         if (existente.isEmpty()) {
@@ -66,6 +71,7 @@ public class CleaningEventController {
         return ResponseEntity.ok(m.map(actualizado, CleaningEventDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (ceS.listId(id).isPresent()) {
             ceS.delete(id);

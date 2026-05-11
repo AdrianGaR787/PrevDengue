@@ -23,7 +23,7 @@ public class JwtTokenUtil {
     private String secret;
 
     // 1. Generamos la llave de forma segura a partir de los bytes del texto (SIN BASE64)
-    private SecretKey getSigningKey() {
+    SecretKey getSigningKey() {
         byte[] keyBytes = this.secret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }

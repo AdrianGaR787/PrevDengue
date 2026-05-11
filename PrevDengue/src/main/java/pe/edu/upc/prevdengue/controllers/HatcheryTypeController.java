@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
 import pe.edu.upc.prevdengue.dtos.HatcheryTypeDTO;
@@ -21,8 +22,10 @@ import java.util.stream.Collectors;
 public class HatcheryTypeController {
     @Autowired
     private IHatcheryTypeService cS;
-    @GetMapping
 
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<List<HatcheryTypeDTO>>listar(){
         ModelMapper m=new ModelMapper();
         List<HatcheryTypeDTO> listaCriaderos=cS.list().stream()
@@ -31,6 +34,7 @@ public class HatcheryTypeController {
         return ResponseEntity.ok(listaCriaderos);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody HatcheryTypeSpecialDTO dto){
         ModelMapper m = new ModelMapper();
         HatcheryType h = m.map(dto, HatcheryType.class);
@@ -41,6 +45,7 @@ public class HatcheryTypeController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<HatcheryType> criadero = cS.listId(id);
@@ -54,6 +59,7 @@ public class HatcheryTypeController {
         }
     }
     @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<String> actualizar(@RequestBody HatcheryTypeSpecialDTO dto) {
 
         Optional<HatcheryType> existente = cS.listId(dto.getIdHatcheryType());
@@ -71,6 +77,7 @@ public class HatcheryTypeController {
         return ResponseEntity.ok("Tipo de criadero actualizado correctamente");
     }
     @DeleteMapping("/eliminar/{id}")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<String> eliminar(@PathVariable int id) {
         Optional<HatcheryType> existente = cS.listId(id);
 

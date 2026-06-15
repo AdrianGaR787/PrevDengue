@@ -42,20 +42,30 @@ public class Report {
 
     @ManyToMany
     @JoinTable(
-            name = "SymptomReport",
-            joinColumns = @JoinColumn(name = "idReport"),
-            inverseJoinColumns = @JoinColumn(name = "idSymptom")
+            name = "symptom_report", // Nombre de tu tabla intermedia
+            joinColumns = @JoinColumn(name = "id_report"),
+            inverseJoinColumns = @JoinColumn(name = "id_symptom")
     )
     private List<Symptom> symptoms;
+
+    @ManyToOne
+    @JoinColumn(name = "id_district", nullable = false)
+    private District district;
+
+    @OneToMany(mappedBy = "report", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<NeighborValidation> neighborValidations;
 
     public Report() {
     }
 
-    public Report(int idReport, User user, HatcheryType hatcheryType, ReportStatus status, double latitude, double longitude, String description, LocalDateTime reportDate, boolean isAnonymous, List<Symptom> symptoms) {
+    public Report(int idReport, User user, HatcheryType hatcheryType, ReportStatus status, District district,
+                  double latitude, double longitude, String description, LocalDateTime reportDate,
+                  boolean isAnonymous, List<Symptom> symptoms) {
         this.idReport = idReport;
         this.user = user;
         this.hatcheryType = hatcheryType;
         this.status = status;
+        this.district = district;
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
@@ -63,84 +73,39 @@ public class Report {
         this.isAnonymous = isAnonymous;
         this.symptoms = symptoms;
     }
+    public List<NeighborValidation> getNeighborValidations() { return neighborValidations; }
+    public void setNeighborValidations(List<NeighborValidation> neighborValidations) { this.neighborValidations = neighborValidations; }
 
-    public int getIdReport() {
-        return idReport;
-    }
+    public int getIdReport() { return idReport; }
+    public void setIdReport(int idReport) { this.idReport = idReport; }
 
-    public void setIdReport(int idReport) {
-        this.idReport = idReport;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public User getUser() {
-        return user;
-    }
+    public HatcheryType getHatcheryType() { return hatcheryType; }
+    public void setHatcheryType(HatcheryType hatcheryType) { this.hatcheryType = hatcheryType; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public ReportStatus getStatus() { return status; }
+    public void setStatus(ReportStatus status) { this.status = status; }
 
-    public HatcheryType getHatcheryType() {
-        return hatcheryType;
-    }
+    public District getDistrict() { return district; }
+    public void setDistrict(District district) { this.district = district; }
 
-    public void setHatcheryType(HatcheryType hatcheryType) {
-        this.hatcheryType = hatcheryType;
-    }
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
 
-    public ReportStatus getStatus() {
-        return status;
-    }
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
-    public void setStatus(ReportStatus status) {
-        this.status = status;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public double getLatitude() {
-        return latitude;
-    }
+    public LocalDateTime getReportDate() { return reportDate; }
+    public void setReportDate(LocalDateTime reportDate) { this.reportDate = reportDate; }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
+    public boolean isAnonymous() { return isAnonymous; }
+    public void setAnonymous(boolean anonymous) { isAnonymous = anonymous; }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getReportDate() {
-        return reportDate;
-    }
-
-    public void setReportDate(LocalDateTime reportDate) {
-        this.reportDate = reportDate;
-    }
-
-    public boolean isAnonymous() {
-        return isAnonymous;
-    }
-
-    public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
-    }
-
-    public List<Symptom> getSymptoms() {
-        return symptoms;
-    }
-
-    public void setSymptoms(List<Symptom> symptoms) {
-        this.symptoms = symptoms;
-    }
+    public List<Symptom> getSymptoms() { return symptoms; }
+    public void setSymptoms(List<Symptom> symptoms) { this.symptoms = symptoms; }
 }

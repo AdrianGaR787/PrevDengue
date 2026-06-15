@@ -63,7 +63,6 @@ public class SymptomController {
     }
 
     @DeleteMapping("/elimina/{id}")
-    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         if (sS.listId(id).isPresent()) {
             sS.delete(id);
@@ -73,7 +72,6 @@ public class SymptomController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Symptom> curso = sS.listId(id);
@@ -87,7 +85,6 @@ public class SymptomController {
         }
     }
     @GetMapping("/mas-frecuentes")
-    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getMostFrequentSymptoms() {
         return ResponseEntity.ok(sS.getMostFrequentSymptoms());
     }

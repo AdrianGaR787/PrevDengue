@@ -48,6 +48,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
+
                 .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(Customizer.withDefaults());
@@ -56,4 +57,5 @@ public class WebSecurityConfig {
 
         return httpSecurity.build();
     }
+    
 }

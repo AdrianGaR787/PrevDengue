@@ -33,9 +33,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String path = request.getServletPath();
 
-        // Ignorar endpoints públicos
+        // 1. IGNORAR PETICIONES OPTIONS (vital para CORS en POST)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String path = request.getServletPath();
         if (path.equals("/authenticate") || path.equals("/usuarios/nuevo") ||
                 path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
             chain.doFilter(request, response);
@@ -50,13 +55,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
-                System.out.println("No se puede encontrar el token JWT");
-            } catch (ExpiredJwtException e) {
-                System.out.println("Token JWT ha expirado");
+            } catch (Exception e) {
+                System.out.println("❌ Error procesando token: " + e.getMessage());
             }
-        } else {
-            logger.warn("JWT Token no inicia con la palabra Bearer");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -69,8 +70,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         .parseSignedClaims(jwtToken)
                         .getPayload();
 
-                String roles = (String) claims.get("roles"); // Ej: "ADMIN,USER"
-                List<SimpleGrantedAuthority> authorities = Arrays.stream(roles.split(","))
+                // 2. PARSEO SEGURO DE ROLES
+                Object rolesObj = claims.get("roles");
+                String rolesStr = (rolesObj instanceof String) ? (String) rolesObj : "";
+
+                List<SimpleGrantedAuthority> authorities = Arrays.stream(rolesStr.split(","))
+                        .filter(s -> !s.isEmpty()) // Evitar cadena vacía
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
@@ -79,8 +84,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
+                System.out.println("✅ Usuario autenticado: " + username + " con roles: " + rolesStr);
             }
         }
         chain.doFilter(request, response);
     }
-}
+    }

@@ -3,6 +3,7 @@ package pe.edu.upc.prevdengue.servicesinterfaces;
 import pe.edu.upc.prevdengue.dtos.ReportSymptomCountDTO;
 import pe.edu.upc.prevdengue.entities.Report;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,8 @@ public interface IReportService {
     public List<String[]> getReportCountByStatus();
     List<ReportSymptomCountDTO> listReportsWithMostSymptoms();
     List<Report> listHighRiskReports();
+
+    List<Report> findByDistrict(int id);
+
+    List<String[]> getReportCountByDistrict();
 }

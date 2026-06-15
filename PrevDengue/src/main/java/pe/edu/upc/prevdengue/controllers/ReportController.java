@@ -8,8 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.PredictiveAlertDTO;
 import pe.edu.upc.prevdengue.dtos.ReportDTO;
-import pe.edu.upc.prevdengue.entities.PredictiveAlert;
-import pe.edu.upc.prevdengue.entities.Report;
+import pe.edu.upc.prevdengue.entities.*;
 import pe.edu.upc.prevdengue.servicesinterfaces.IReportService;
 
 import java.util.List;
@@ -32,10 +31,11 @@ public class ReportController {
         return ResponseEntity.ok(reportList);
     }
     @PostMapping("/nuevo")
-    @PreAuthorize("hasAuthority('CIUDADANO')")
+    //@PreAuthorize("hasAuthority('CIUDADANO')")
     public ResponseEntity<?> register(@RequestBody ReportDTO dto) {
         ModelMapper m = new ModelMapper();
         Report r = m.map(dto, Report.class);
+        r.setAnonymous(dto.isAnonymous());
         Report saved = rS.insert(r);
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, ReportDTO.class));
     }
@@ -59,8 +59,40 @@ public class ReportController {
         }
         ModelMapper m = new ModelMapper();
         Report u = m.map(dto, Report.class);
-        Report actualizado = rS.insert(u);
-        return ResponseEntity.ok(m.map(actualizado, ReportDTO.class));
+        u.setAnonymous(dto.isAnonymous());
+        // 🛡️ REFUERZO MANUAL: Evitamos que los IDs se vuelvan null (¡Crucial!)
+        if (dto.getDistrict() != null) {
+            District d = new District();
+            d.setIdDistrict(dto.getDistrict().getIdDistrict());
+            u.setDistrict(d);
+        }
+        if (dto.getUser() != null) {
+            User user = new User();
+            user.setIdUser(dto.getUser().getIdUser());
+            u.setUser(user);
+        }
+        if (dto.getHatcheryType() != null) {
+            HatcheryType h = new HatcheryType();
+            h.setIdHatcheryType(dto.getHatcheryType().getIdHatcheryType());
+            u.setHatcheryType(h);
+        }
+        if (dto.getStatus() != null) {
+            ReportStatus s = new ReportStatus();
+            s.setIdStatus(dto.getStatus().getIdStatus());
+            u.setStatus(s);
+        }
+        if (dto.getSymptoms() != null && !dto.getSymptoms().isEmpty()) {
+            List<Symptom> listSymptoms = dto.getSymptoms().stream().map(sDto -> {
+                Symptom s = new Symptom();
+                s.setIdSymptom(sDto.getIdSymptom());
+                return s;
+            }).collect(Collectors.toList());
+            u.setSymptoms(listSymptoms);
+        }
+
+        // Cambié insert por update para mantener la semántica, aunque usen .save() por debajo
+        rS.update(u);
+        return ResponseEntity.ok(m.map(u, ReportDTO.class));
     }
     @DeleteMapping("/elimina/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'BRIGADISTA')")
@@ -90,7 +122,6 @@ public class ReportController {
         return ResponseEntity.ok(report);
     }
     @GetMapping("/con-mas-sintomas")
-    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getReportsWithMostSymptoms() {
         return ResponseEntity.ok(rS.listReportsWithMostSymptoms());
     }
@@ -98,5 +129,21 @@ public class ReportController {
     @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
     public ResponseEntity<?> getHighRiskReports() {
         return ResponseEntity.ok(rS.listHighRiskReports());
+    }
+
+    @GetMapping("/por-distrito/{id}")
+    @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
+    public ResponseEntity<List<ReportDTO>> listByDistrict(@PathVariable int id) {
+        ModelMapper m = new ModelMapper();
+        List<ReportDTO> list = rS.findByDistrict(id).stream()
+                .map(x -> m.map(x, ReportDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/ranking-distritos")
+    @PreAuthorize("hasAnyAuthority('BRIGADISTA', 'ADMIN')")
+    public ResponseEntity<List<String[]>> getDistrictRanking() {
+        return ResponseEntity.ok(rS.getReportCountByDistrict());
     }
 }

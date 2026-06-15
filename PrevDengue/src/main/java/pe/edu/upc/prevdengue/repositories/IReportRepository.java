@@ -2,6 +2,7 @@ package pe.edu.upc.prevdengue.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.prevdengue.dtos.ReportSymptomCountDTO;
 import pe.edu.upc.prevdengue.entities.Report;
@@ -27,4 +28,13 @@ public interface IReportRepository extends JpaRepository<Report,Integer> {
             "JOIN symptom s ON sr.id_symptom = s.id_symptom " +
             "WHERE s.gravity_level >= 4", nativeQuery = true)
     List<Report> getHighRiskReports();
+    @Query("SELECT r FROM Report r WHERE r.district.idDistrict = :idDistrict")
+    List<Report> findByDistrictId(@Param("idDistrict") int idDistrict);
+
+    @Query(value = "SELECT d.name_district, COUNT(r.id_report) " +
+            "FROM district d LEFT JOIN report r ON d.id_district = r.id_district " +
+            "GROUP BY d.name_district ORDER BY COUNT(r.id_report) DESC",
+            nativeQuery = true)
+    List<String[]> getReportCountByDistrict();
+    ;
 }

@@ -2,6 +2,7 @@ package pe.edu.upc.prevdengue.dtos;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReportDTO {
 
@@ -13,8 +14,19 @@ public class ReportDTO {
     private double longitude;
     private String description;
     private LocalDateTime reportDate;
-    private boolean isAnonymous;
+    @JsonProperty("anonymous")
+    private boolean anonymous;
     private List<SymptomDTO> symptoms;
+    private DistrictDTO district;
+
+
+    public DistrictDTO getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(DistrictDTO district) {
+        this.district = district;
+    }
 
     public int getIdReport() {
         return idReport;
@@ -81,11 +93,11 @@ public class ReportDTO {
     }
 
     public boolean isAnonymous() {
-        return isAnonymous;
+        return anonymous;
     }
 
     public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
+        this.anonymous = anonymous;
     }
 
     public List<SymptomDTO> getSymptoms() {

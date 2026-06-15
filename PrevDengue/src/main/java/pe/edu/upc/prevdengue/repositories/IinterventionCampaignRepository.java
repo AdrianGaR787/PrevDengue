@@ -14,10 +14,8 @@ import java.util.List;
 public interface IinterventionCampaignRepository extends JpaRepository<InterventionCampaign,Integer> {
     public List<InterventionCampaign> findByDistrictNameDistrictContainingIgnoreCase(String nameDistrict);
     @Query(value = "SELECT tipo_intervencion AS tipoIntervencion, " +
-            "CAST(COUNT(id_campana) AS INTEGER) AS totalCampanas " +
             "FROM intervention_campaign " +
-            "GROUP BY tipo_intervencion " +
-            "ORDER BY totalCampanas DESC", nativeQuery = true)
+            "GROUP BY tipo_intervencion " , nativeQuery = true)
     List<CampaignByTypeDTO> getCampaignsByType();
 
     @Query(value = "SELECT * FROM intervention_campaign " +

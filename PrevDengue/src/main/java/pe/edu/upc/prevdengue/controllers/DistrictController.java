@@ -1,84 +1,98 @@
-package pe.edu.upc.prevdengue.controllers;
+    package pe.edu.upc.prevdengue.controllers;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.prevdengue.dtos.DistrictDTO;
-import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
-import pe.edu.upc.prevdengue.entities.District;
-import pe.edu.upc.prevdengue.servicesinterfaces.IDistrictService;
+    import org.modelmapper.ModelMapper;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.security.access.prepost.PreAuthorize;
+    import org.springframework.web.bind.annotation.*;
+    import pe.edu.upc.prevdengue.dtos.DistrictDTO;
+    import pe.edu.upc.prevdengue.dtos.DistrictSpecialDTO;
+    import pe.edu.upc.prevdengue.entities.District;
+    import pe.edu.upc.prevdengue.servicesinterfaces.IDistrictService;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+    import java.util.List;
+    import java.util.Optional;
+    import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/distritos")
-public class DistrictController {
-    @Autowired
-    private IDistrictService dS;
+    @RestController
+    @RequestMapping("/distritos")
+    public class DistrictController {
+        @Autowired
+        private IDistrictService dS;
 
-    @GetMapping()
-    public ResponseEntity<List<DistrictDTO>>listar(){
-        ModelMapper m=new ModelMapper();
-        List<DistrictDTO> listaDistritos=dS.list().stream()
-                .map(x->m.map(x,DistrictDTO.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(listaDistritos);
+        @GetMapping()
+        @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
+        public ResponseEntity<?> listar() {
+            ModelMapper m = new ModelMapper();
+            List<DistrictDTO> listaDistritos = dS.list().stream()
+                    .map(x -> m.map(x, DistrictDTO.class))
+                    .collect(Collectors.toList());
 
-    }
-    @PostMapping("/nuevo")
-    public ResponseEntity<?> registrar(@RequestBody DistrictSpecialDTO dto){
-        ModelMapper m = new ModelMapper();
-        District d = m.map(dto, District.class);
+            if (listaDistritos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No hay distritos registrados");
+            }
 
-        District cur = dS.insert(d);
-        DistrictSpecialDTO responseDTO = m.map(cur, DistrictSpecialDTO.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable int id) {
-        ModelMapper m = new ModelMapper();
-        Optional<District> distrito = dS.listId(id);
-
-        if (distrito.isPresent()) {
-            DistrictSpecialDTO dto = m.map(distrito.get(), DistrictSpecialDTO.class);
-            return ResponseEntity.ok(dto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Distrito no encontrado");
-        }
-    }
-
-    @PutMapping("/actualiza")
-    public ResponseEntity<String> actualizar(@RequestBody DistrictSpecialDTO dto) {
-
-        Optional<District> existente = dS.listId(dto.getIdDistrict());
-        if (existente.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Distrito no encontrado");
+            return ResponseEntity.ok(listaDistritos);
         }
 
-        District dis = existente.get();
+        @PostMapping("/nuevo")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
+        public ResponseEntity<?> registrar(@RequestBody DistrictSpecialDTO dto){
+            ModelMapper m = new ModelMapper();
+            District d = m.map(dto, District.class);
 
-        dis.setNameDistrict(dto.getNameDistrict());
-
-        dS.update(dis);
-
-        return ResponseEntity.ok("Distrito actualizado correctamente");
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable int id) {
-        Optional<District> distrito = dS.listId(id);
-
-        if (distrito.isPresent()) {
-            dS.delete(id);
-            return ResponseEntity.ok("Distrito eliminado correctamente");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Distrito no encontrado");
+            District cur = dS.insert(d);
+            DistrictSpecialDTO responseDTO = m.map(cur, DistrictSpecialDTO.class);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
+        @GetMapping("/{id}")
+        @PreAuthorize("hasAnyAuthority('CIUDADANO', 'BRIGADISTA', 'ADMIN')")
+        public ResponseEntity<?> buscarPorId(@PathVariable int id) {
+            ModelMapper m = new ModelMapper();
+            Optional<District> distrito = dS.listId(id);
+
+            if (distrito.isPresent()) {
+                DistrictSpecialDTO dto = m.map(distrito.get(), DistrictSpecialDTO.class);
+                return ResponseEntity.ok(dto);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Distrito con ese id no encontrado");
+            }
+        }
+
+        @PutMapping("/actualiza")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
+        public ResponseEntity<String> actualizar(@RequestBody DistrictSpecialDTO dto) {
+
+            Optional<District> existente = dS.listId(dto.getIdDistrict());
+            if (existente.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Distrito no encontrado");
+            }
+
+            District dis = existente.get();
+
+            dis.setNameDistrict(dto.getNameDistrict());
+
+            dS.update(dis);
+
+            return ResponseEntity.ok("Distrito actualizado correctamente");
+        }
+        @DeleteMapping("/eliminar/{id}")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
+        public ResponseEntity<?> eliminar(@PathVariable int id) {
+            Optional<District> existente = dS.listId(id);
+
+            if (existente.isPresent()) {
+                dS.delete(id);
+                return ResponseEntity.ok("Distrito eliminado correctamente");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Distrito no encontrado");
+            }
+        }
+
+
     }
-}

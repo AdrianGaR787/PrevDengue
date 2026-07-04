@@ -1,16 +1,24 @@
 package pe.edu.upc.prevdengue.dtos;
 
-
 public class UserDTO {
     private int idUser;
-    private String nameUser;
-    private String emailUser;
-    private String userPhone;
-    private String hashPassword;
+    private RoleDTO role;
+    private String name;
+    private String email;
+    private String phone;
+    private String passwordHash;
     private String preferredLanguage;
-    private int totalPoints;
-    private boolean activeBiometrics;
-    private int idRole;
+    private int accumulatedPoints;
+    private boolean biometricsActive;
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public int getIdUser() {
         return idUser;
@@ -20,36 +28,44 @@ public class UserDTO {
         this.idUser = idUser;
     }
 
-    public String getNameUser() {
-        return nameUser;
+    public RoleDTO getRole() {
+        return role;
     }
 
-    public void setNameUser(String nameUser) {
-        this.nameUser = nameUser;
+    public void setRole(RoleDTO role) {
+        this.role = role;
     }
 
-    public String getEmailUser() {
-        return emailUser;
+    public String getName() {
+        return name;
     }
 
-    public void setEmailUser(String emailUser) {
-        this.emailUser = emailUser;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getUserPhone() {
-        return userPhone;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getHashPassword() {
-        return hashPassword;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setHashPassword(String hashPassword) {
-        this.hashPassword = hashPassword;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getPreferredLanguage() {
@@ -60,27 +76,19 @@ public class UserDTO {
         this.preferredLanguage = preferredLanguage;
     }
 
-    public int getTotalPoints() {
-        return totalPoints;
+    public int getAccumulatedPoints() {
+        return accumulatedPoints;
     }
 
-    public void setTotalPoints(int totalPoints) {
-        this.totalPoints = totalPoints;
+    public void setAccumulatedPoints(int accumulatedPoints) {
+        this.accumulatedPoints = accumulatedPoints;
     }
 
-    public boolean isActiveBiometrics() {
-        return activeBiometrics;
+    public boolean isBiometricsActive() {
+        return biometricsActive;
     }
 
-    public void setActiveBiometrics(boolean activeBiometrics) {
-        this.activeBiometrics = activeBiometrics;
-    }
-
-    public int getIdRole() {
-        return idRole;
-    }
-
-    public void setIdRole(int idRole) {
-        this.idRole = idRole;
+    public void setBiometricsActive(boolean biometricsActive) {
+        this.biometricsActive = biometricsActive;
     }
 }

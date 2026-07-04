@@ -3,10 +3,14 @@ package pe.edu.upc.prevdengue.dtos;
 public class SymptomDTO {
     private int idSymptom;
     private String nameSymptom;
-    private int gravityLevel;
+    private int gravitylevel;
 
-    public int getId_Symptom() {
-        return idSymptom;
+    public String getNameSymptom() {
+        return nameSymptom;
+    }
+
+    public void setNameSymptom(String nameSymptom) {
+        this.nameSymptom = nameSymptom;
     }
 
     public int getIdSymptom() {
@@ -17,19 +21,11 @@ public class SymptomDTO {
         this.idSymptom = idSymptom;
     }
 
-    public String getNameSymptom() {
-        return nameSymptom;
+    public int getGravitylevel() {
+        return gravitylevel;
     }
 
-    public void setNameSymptom(String nameSymptom) {
-        this.nameSymptom = nameSymptom;
-    }
-
-    public int getGravityLevel() {
-        return gravityLevel;
-    }
-
-    public void setGravityLevel(int gravityLevel) {
-        this.gravityLevel = gravityLevel;
+    public void setGravitylevel(int gravitylevel) {
+        this.gravitylevel = gravitylevel;
     }
 }

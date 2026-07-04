@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface IDistrictService {
     public List<District>list();
-    public District insert(District d);
-    public Optional<District> listId(int id);
+    public District insert(District d); // Para Crear y Actualizar
+    public void delete(int idDistrict);    // Para Eliminar
+    public Optional<District> listId(int idDistrict);
     public void update(District d);
-    public void delete(int id);
 }

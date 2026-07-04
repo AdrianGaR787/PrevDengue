@@ -2,15 +2,15 @@ package pe.edu.upc.prevdengue.dtos;
 
 public class ReportStatusDTO {
 
-    private int idReportStatus;
+    private int idStatus;
     private String nameStatus;
 
-    public int getIdReportStatus() {
-        return idReportStatus;
+    public int getIdStatus() {
+        return idStatus;
     }
 
-    public void setIdReportStatus(int idReportStatus) {
-        this.idReportStatus = idReportStatus;
+    public void setIdStatus(int idStatus) {
+        this.idStatus = idStatus;
     }
 
     public String getNameStatus() {

@@ -7,6 +7,7 @@ import pe.edu.upc.prevdengue.repositories.IRiskLevelRepository;
 import pe.edu.upc.prevdengue.servicesinterfaces.IRiskLevelService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RiskLevelServiceImplement implements IRiskLevelService {
@@ -19,4 +20,26 @@ public class RiskLevelServiceImplement implements IRiskLevelService {
     public List<RiskLevel> list() {
         return rR.findAll();
     }
+
+    @Override
+    public RiskLevel insert(RiskLevel rL) {
+        return rR.save(rL);
+    }
+
+    @Override
+    public void delete(int idRiskLevel) {
+        rR.deleteById(idRiskLevel);
+    }
+
+    @Override
+    public Optional<RiskLevel> listId(int idRiskLevel) {
+        return rR.findById(idRiskLevel);
+    }
+
+    @Override
+    public RiskLevel update(RiskLevel rL) {
+        rR.save(rL);
+        return rL;
+    }
+
 }

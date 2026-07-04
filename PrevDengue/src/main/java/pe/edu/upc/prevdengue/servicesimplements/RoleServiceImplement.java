@@ -32,12 +32,12 @@ public class RoleServiceImplement implements IRoleService {
     }
 
     @Override
-    public void update(Role r) {
-        cR.save(r);
+    public void delete(int idRole) {
+        cR.deleteById(idRole);
     }
-
     @Override
-    public void delete(int id) {
-        cR.deleteById(id);
+    public void update(Role rO) {
+        cR.save(rO);
+
     }
 }

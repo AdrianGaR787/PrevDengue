@@ -7,9 +7,12 @@ import java.util.Optional;
 
 public interface IUserService {
     public List<User> list();
-    public User insert (User us);
-    public Optional<User> listId(int id);
-    public void update(User u);
-    public void delete(int id);
-
+    public User insert(User uS);
+    public void delete(int idUser);
+    public Optional<User> listId(int idUser);
+    public void update(User uS);
+    List<User> listTopUsersByPoints();
+    List<User> listUsersByPreferredLanguage();
+    // 🚀 Nuevo método para buscar al usuario por correo
+    public User findByEmail(String email);
 }

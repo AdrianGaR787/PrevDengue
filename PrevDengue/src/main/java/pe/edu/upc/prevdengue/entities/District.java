@@ -8,7 +8,7 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idDistrict;
-    @Column(name ="nameDistrict" ,length = 100 ,nullable = false)
+    @Column(name ="nameDistrict" ,length = 100 ,nullable = true)
     private String nameDistrict;
 
     public District() {

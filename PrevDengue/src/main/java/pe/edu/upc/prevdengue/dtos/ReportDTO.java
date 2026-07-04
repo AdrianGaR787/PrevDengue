@@ -1,22 +1,32 @@
 package pe.edu.upc.prevdengue.dtos;
-import pe.edu.upc.prevdengue.entities.HatcheryType;
-import pe.edu.upc.prevdengue.entities.ReportStatus;
-import pe.edu.upc.prevdengue.entities.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ReportDTO {
+
     private int idReport;
+    private UserDTO user;
+    private HatcheryTypeDTO hatcheryType;
+    private ReportStatusDTO status;
     private double latitude;
     private double longitude;
-    private String direction;
     private String description;
-    private String photoUrl;
-    private boolean isAnonymous;
-    private LocalDate reportDate;
-    private User user;
-    private HatcheryType hatcheryType;
-    private ReportStatus reportStatus;
+    private LocalDateTime reportDate;
+    @JsonProperty("anonymous")
+    private boolean anonymous;
+    private List<SymptomDTO> symptoms;
+    private DistrictDTO district;
+
+
+    public DistrictDTO getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(DistrictDTO district) {
+        this.district = district;
+    }
 
     public int getIdReport() {
         return idReport;
@@ -24,6 +34,30 @@ public class ReportDTO {
 
     public void setIdReport(int idReport) {
         this.idReport = idReport;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public HatcheryTypeDTO getHatcheryType() {
+        return hatcheryType;
+    }
+
+    public void setHatcheryType(HatcheryTypeDTO hatcheryType) {
+        this.hatcheryType = hatcheryType;
+    }
+
+    public ReportStatusDTO getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReportStatusDTO status) {
+        this.status = status;
     }
 
     public double getLatitude() {
@@ -42,14 +76,6 @@ public class ReportDTO {
         this.longitude = longitude;
     }
 
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -58,51 +84,27 @@ public class ReportDTO {
         this.description = description;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public boolean isAnonymous() {
-        return isAnonymous;
-    }
-
-    public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
-    }
-
-    public LocalDate getReportDate() {
+    public LocalDateTime getReportDate() {
         return reportDate;
     }
 
-    public void setReportDate(LocalDate reportDate) {
+    public void setReportDate(LocalDateTime reportDate) {
         this.reportDate = reportDate;
     }
 
-    public User getUser() {
-        return user;
+    public boolean isAnonymous() {
+        return anonymous;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAnonymous(boolean anonymous) {
+        this.anonymous = anonymous;
     }
 
-    public HatcheryType getHatcheryType() {
-        return hatcheryType;
+    public List<SymptomDTO> getSymptoms() {
+        return symptoms;
     }
 
-    public void setHatcheryType(HatcheryType hatcheryType) {
-        this.hatcheryType = hatcheryType;
-    }
-
-    public ReportStatus getReportStatus() {
-        return reportStatus;
-    }
-
-    public void setReportStatus(ReportStatus reportStatus) {
-        this.reportStatus = reportStatus;
+    public void setSymptoms(List<SymptomDTO> symptoms) {
+        this.symptoms = symptoms;
     }
 }

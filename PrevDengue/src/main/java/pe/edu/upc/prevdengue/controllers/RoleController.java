@@ -4,10 +4,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prevdengue.dtos.RoleDTO;
 import pe.edu.upc.prevdengue.dtos.RoleSpecialDTO;
+import pe.edu.upc.prevdengue.dtos.SymptomDTO;
 import pe.edu.upc.prevdengue.entities.Role;
+import pe.edu.upc.prevdengue.entities.Symptom;
 import pe.edu.upc.prevdengue.servicesinterfaces.IRoleService;
 
 import java.util.List;
@@ -15,12 +18,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 public class RoleController {
     @Autowired
     private IRoleService rS;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<RoleDTO>>listar(){
         ModelMapper m=new ModelMapper();
         List<RoleDTO> listaRoles= rS.list().stream()
@@ -29,6 +33,7 @@ public class RoleController {
         return ResponseEntity.ok(listaRoles);
     }
     @PostMapping("/nuevo")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> registrar(@RequestBody RoleSpecialDTO dto){
         ModelMapper m = new ModelMapper();
         Role r = m.map(dto,Role.class);
@@ -39,6 +44,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> buscarPorId(@PathVariable int id) {
         ModelMapper m = new ModelMapper();
         Optional<Role> curso = rS.listId(id);
@@ -48,37 +54,29 @@ public class RoleController {
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Curso no encontrado");
+                    .body("Rol con ese ID no encontrado");
         }
     }
-    @PutMapping("/actualiza")
-    public ResponseEntity<String> actualizar(@RequestBody RoleSpecialDTO dto) {
 
+    @PutMapping("/actualiza")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> actualizar(@RequestBody RoleSpecialDTO dto) {
         Optional<Role> existente = rS.listId(dto.getIdRole());
         if (existente.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Rol no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol no encontrado");
         }
-
-        Role ro = existente.get();
-
-        ro.setNameRole(dto.getNameRole());
-        ro.setDescription(dto.getDescription());
-
-        rS.update(ro);
-
-        return ResponseEntity.ok("Rol actualizado correctamente");
+        ModelMapper m = new ModelMapper();
+        Role s = m.map(dto, Role.class);
+        Role actualizado = rS.insert(s);
+        return ResponseEntity.ok(m.map(actualizado, RoleSpecialDTO.class));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable int id) {
-        Optional<Role> role = rS.listId(id);
-
-        if (role.isPresent()) {
+    @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> eliminar(@PathVariable int id) {
+        if (rS.listId(id).isPresent()) {
             rS.delete(id);
-            return ResponseEntity.ok("Rol eliminado correctamente");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Rol no encontrado");
+            return ResponseEntity.ok("Rol eliminado");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Rol con ese id no encontrado al intentar eliminar");
     }
 }

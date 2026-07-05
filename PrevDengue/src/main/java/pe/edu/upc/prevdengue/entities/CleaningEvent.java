@@ -4,6 +4,7 @@ package pe.edu.upc.prevdengue.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "CleaningEvent")
@@ -30,6 +31,33 @@ public class CleaningEvent {
 
     @Column(name ="status",length = 50,nullable = false)
     private String status;
+
+    @Column(name = "maxCapacity", nullable = false)
+    private int maxCapacity = 20;
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "id_event"),
+            inverseJoinColumns = @JoinColumn(name = "id_user")
+    )
+    private java.util.Set<User> participants = new java.util.HashSet<>();
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants;
+    }
 
     public CleaningEvent() {
     }

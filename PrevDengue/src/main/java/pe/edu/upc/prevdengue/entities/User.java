@@ -13,13 +13,13 @@ public class User {
     @JoinColumn(name = "id_role", nullable = false)
     private Role role;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100, nullable = false, unique=true)
     private String name;
 
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email", length = 100, nullable = false, unique=true)
     private String email;
 
-    @Column(name = "phone", length = 15)
+    @Column(name = "phone", length = 15,unique = true)
     private String phone;
 
     @Column(name = "password_hash", length = 255, nullable = false)
@@ -33,6 +33,17 @@ public class User {
 
     @Column(name = "biometrics_active")
     private boolean biometricsActive;
+    // 🚀 NUEVA COLUMNA PARA NOTIFICACIONES PUSH
+    @Column(name = "fcm_token", length = 255)
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public User() {}
 

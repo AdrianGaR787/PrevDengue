@@ -63,27 +63,26 @@ public class ReportServiceImplement implements IReportService {
 
         // 2. Asignar Tipo de Criadero
         if (rP.getHatcheryType() != null && rP.getHatcheryType().getIdHatcheryType() != 0) {
-            HatcheryType h = hR.findById(rP.getHatcheryType().getIdHatcheryType()).orElse(null);
+            int idBuscado = rP.getHatcheryType().getIdHatcheryType();
+            HatcheryType h = hR.findById(idBuscado)
+                    .orElseThrow(() -> new RuntimeException("❌ ERROR: No existe ningún Tipo de Criadero en la BD con el ID: " + idBuscado));
             rP.setHatcheryType(h);
         }
 
-        // 3. Asignar Usuario
+        // 3. Asignar Usuario (También le quitamos el orElse(null) por seguridad)
         if (rP.getUser() != null && rP.getUser().getIdUser() != 0) {
-            User u = uR.findById(rP.getUser().getIdUser()).orElse(null);
+            int idBuscado = rP.getUser().getIdUser();
+            User u = uR.findById(idBuscado)
+                    .orElseThrow(() -> new RuntimeException("❌ ERROR: No existe ningún Usuario en la BD con el ID: " + idBuscado));
             rP.setUser(u);
         }
 
         // 4. Asignar Estado
         if (rP.getStatus() != null && rP.getStatus().getIdStatus() != 0) {
-            ReportStatus s = sR.findById(rP.getStatus().getIdStatus()).orElse(null);
+            int idBuscado = rP.getStatus().getIdStatus();
+            ReportStatus s = sR.findById(idBuscado)
+                    .orElseThrow(() -> new RuntimeException("❌ ERROR: No existe ningún Estado en la BD con el ID: " + idBuscado));
             rP.setStatus(s);
-        }
-        if (rP.getSymptoms() != null && !rP.getSymptoms().isEmpty()) {
-            List<Symptom> realSymptoms = new ArrayList<>();
-            for (Symptom s : rP.getSymptoms()) {
-                symRepo.findById(s.getIdSymptom()).ifPresent(realSymptoms::add);
-            }
-            rP.setSymptoms(realSymptoms);
         }
 
         System.out.println("💾 Intentando guardar en PostgreSQL...");

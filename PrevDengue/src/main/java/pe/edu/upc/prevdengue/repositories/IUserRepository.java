@@ -18,7 +18,7 @@ public interface IUserRepository extends JpaRepository<User,Integer> {
     //BUSCAR POR NOMBRE
     @Query("select count(u) from User u where u.email = :email")
     int buscarEmail(@Param("email") String email);
-    
+
     //INSERTAR ROLES
     @Transactional
     @Modifying
@@ -27,8 +27,14 @@ public interface IUserRepository extends JpaRepository<User,Integer> {
 
     @Query(value = "SELECT * FROM \"user\" ORDER BY accumulated_points DESC", nativeQuery = true)
     List<User> getTopUsersByPoints();
-    
+
     @Query(value = "SELECT * FROM \"user\" WHERE preferred_language IN ('ES', 'EN', 'Español', 'Ingles')", nativeQuery = true)
     List<User> getUsersByPreferredLanguage();
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u SET u.fcmToken = null WHERE u.fcmToken = :token")
+    void clearDeadFcmToken(@Param("token") String token);
+
 
 }

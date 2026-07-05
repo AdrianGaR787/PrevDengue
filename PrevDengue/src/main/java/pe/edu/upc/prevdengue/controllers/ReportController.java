@@ -35,6 +35,57 @@ public class ReportController {
     public ResponseEntity<?> register(@RequestBody ReportDTO dto) {
         ModelMapper m = new ModelMapper();
         Report r = m.map(dto, Report.class);
+
+        if (dto.getDistrict() != null) {
+            District d = new District();
+            d.setIdDistrict(dto.getDistrict().getIdDistrict());
+            r.setDistrict(d);
+        }
+
+        // 2. Usuario (Probablemente ya lo tenías)
+        if (dto.getUser() != null) {
+            User u = new User();
+            u.setIdUser(dto.getUser().getIdUser());
+            r.setUser(u);
+        }
+
+        // 🛠️ 3. Tipo de Criadero (¡EL QUE ESTÁ FALLANDO AHORA!)
+        if (dto.getHatcheryType() != null && dto.getHatcheryType().getIdHatcheryType() > 0) {
+            HatcheryType h = new HatcheryType();
+            h.setIdHatcheryType(dto.getHatcheryType().getIdHatcheryType());
+            r.setHatcheryType(h);
+        } else {
+            // PLAN B: Si Angular no envía criadero, le asignamos el ID 1 por defecto (ej: "Otros" o "Sin especificar")
+            HatcheryType h = new HatcheryType();
+            h.setIdHatcheryType(1);
+            r.setHatcheryType(h);
+        }
+
+        // 🛠️ 4. Estado del Reporte
+        if (dto.getStatus() != null && dto.getStatus().getIdStatus() > 0) {
+            ReportStatus s = new ReportStatus();
+            s.setIdStatus(dto.getStatus().getIdStatus());
+            r.setStatus(s);
+        } else {
+            // PLAN B: Todo reporte NUEVO nace con el Estado ID 1 (Ej: "Registrado" o "Pendiente")
+            ReportStatus s = new ReportStatus();
+            s.setIdStatus(1);
+            r.setStatus(s);
+        }
+
+        // 5. Síntomas
+        if (dto.getSymptoms() != null && !dto.getSymptoms().isEmpty()) {
+            List<Symptom> listSymptoms = dto.getSymptoms().stream().map(sDto -> {
+                Symptom s = new Symptom();
+                s.setIdSymptom(sDto.getIdSymptom());
+                return s;
+            }).collect(Collectors.toList());
+            r.setSymptoms(listSymptoms);
+        }
+
+        // Asegurarnos del booleano
+        r.setAnonymous(dto.isAnonymous());
+
         r.setAnonymous(dto.isAnonymous());
         Report saved = rS.insert(r);
         return ResponseEntity.status(HttpStatus.CREATED).body(m.map(saved, ReportDTO.class));

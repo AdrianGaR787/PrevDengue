@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -39,16 +40,20 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                // ✨ ESTA ES LA LÍNEA CLAVE QUE DEJA PASAR EL CORS ✨
+                .cors(Customizer.withDefaults())
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/authenticate").permitAll()
                         .requestMatchers("/usuarios/nuevo").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/google").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-
                 .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(Customizer.withDefaults());
@@ -57,5 +62,5 @@ public class WebSecurityConfig {
 
         return httpSecurity.build();
     }
-    
+
 }

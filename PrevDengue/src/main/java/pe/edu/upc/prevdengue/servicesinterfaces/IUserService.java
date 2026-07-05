@@ -13,4 +13,6 @@ public interface IUserService {
     public void update(User uS);
     List<User> listTopUsersByPoints();
     List<User> listUsersByPreferredLanguage();
+    // 🚀 Nuevo método para buscar al usuario por correo
+    public User findByEmail(String email);
 }

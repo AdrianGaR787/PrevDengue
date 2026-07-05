@@ -10,6 +10,15 @@ public class UserDTO {
     private String preferredLanguage;
     private int accumulatedPoints;
     private boolean biometricsActive;
+    private String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public int getIdUser() {
         return idUser;

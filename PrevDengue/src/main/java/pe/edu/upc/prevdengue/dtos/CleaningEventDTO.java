@@ -1,15 +1,35 @@
 package pe.edu.upc.prevdengue.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CleaningEventDTO {
     private int idEvent;
     private String title;
-    private UserDTO creatorUser; // ModelMapper will auto-map this!
+    private UserDTO creatorUser;
     private double latitude;
     private double longitude;
     private LocalDateTime eventDate;
     private String status;
+
+    private int maxCapacity;
+    private List<UserDTO> participants;
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public List<UserDTO> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<UserDTO> participants) {
+        this.participants = participants;
+    }
 
     public int getIdEvent() {
         return idEvent;

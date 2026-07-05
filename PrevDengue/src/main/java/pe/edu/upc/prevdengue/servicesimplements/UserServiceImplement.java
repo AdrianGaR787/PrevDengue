@@ -65,4 +65,11 @@ public class UserServiceImplement implements IUserService {
     public List<User> listUsersByPreferredLanguage() {
         return uR.getUsersByPreferredLanguage();
     }
+
+    @Override
+    public User findByEmail(String email) {
+        // Desempaquetamos el Optional. Si el correo existe, devuelve el Usuario.
+        // Si no existe, devuelve null de forma segura.
+        return uR.findByEmail(email).orElse(null);
+    }
 }

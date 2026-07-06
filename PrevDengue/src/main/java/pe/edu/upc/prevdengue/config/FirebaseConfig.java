@@ -5,20 +5,30 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
 
     @PostConstruct
-    public void init() {
+    public void initialize() {
         try {
-            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("firebase-service-account.json");
+            InputStream serviceAccount;
 
-            if (serviceAccount == null) {
-                System.err.println("⚠️ ATENCIÓN: No se encontró el archivo firebase-service-account.json");
-                return;
+            // ☁️ 1. Buscamos la llave en las variables de entorno (Modo Render)
+            String firebaseEnv = System.getenv("FIREBASE_CREDENTIALS");
+
+            if (firebaseEnv != null && !firebaseEnv.trim().isEmpty()) {
+                // Si la variable existe, la convertimos en un archivo virtual
+                serviceAccount = new ByteArrayInputStream(firebaseEnv.getBytes(StandardCharsets.UTF_8));
+            } else {
+                // 💻 2. Si no existe, usamos el archivo físico (Modo Local)
+                // ⚠️ IMPORTANTE: Cambia esta ruta por la que tú ya tenías en tu código
+                serviceAccount = new FileInputStream("src/main/resources/firebase-service-account.json");
             }
 
             FirebaseOptions options = FirebaseOptions.builder()
@@ -27,8 +37,10 @@ public class FirebaseConfig {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                System.out.println("✅ Firebase Admin SDK inicializado correctamente.");
             }
+
+            System.out.println("🔥 Firebase inicializado correctamente");
+
         } catch (Exception e) {
             e.printStackTrace();
         }

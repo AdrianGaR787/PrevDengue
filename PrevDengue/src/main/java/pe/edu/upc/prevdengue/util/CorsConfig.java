@@ -1,8 +1,6 @@
 package pe.edu.upc.prevdengue.util;
 
-// 🟢 IMPORTANTE: Asegúrate de usar el import de Spring Web, no el de Apache Catalina
 import org.springframework.web.filter.CorsFilter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -15,17 +13,21 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
+
+        // 🚀 AQUÍ: Agregaremos tu URL de Vercel una vez que la plataforma te la dé.
+        // Por ahora lo dejamos con localhost, y cuando tengas Vercel será algo como:
+        // config.setAllowedOrigins(List.of("http://localhost:4200", "https://prevdengue-frontend.vercel.app"));
         config.setAllowedOrigins(List.of("http://localhost:4200"));
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
-        // 🛡️ REQUERIDO: Si usas tokens (Authorization header), esto debe ser true
+        // 🛡️ REQUERIDO para JWT y Firebase Auth
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        // 🟢 AHORA SÍ: Le pasamos tu configuración al filtro
         return new CorsFilter(source);
     }
 }

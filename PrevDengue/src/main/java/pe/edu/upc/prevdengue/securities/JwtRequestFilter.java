@@ -40,9 +40,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        String path = request.getServletPath();
-        if (path.equals("/authenticate") || path.equals("/usuarios/nuevo") ||
-                path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+        // Usamos getRequestURI y contains() para evitar problemas con los proxys de Render
+        String path = request.getRequestURI();
+
+        if (path.contains("/authenticate") ||
+                path.contains("/usuarios/nuevo") ||
+                path.contains("/login") ||
+                path.contains("/google") ||
+                path.contains("/v3/api-docs") ||
+                path.contains("/swagger-ui")) {
+
             chain.doFilter(request, response);
             return;
         }
